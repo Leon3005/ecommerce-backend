@@ -34,8 +34,27 @@ router.get("/:id", async (req, res) => {
   // be sure to include its associated Product data
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   // create a new tag
+  const isValid = ({ body }) => {
+    const validKeys = ["tag_name"];
+
+    return Object.keys(body).every((keyFromReq) => {
+      return validKeys.includes(keyFromReq);
+    });
+  };
+
+  try {
+    if (isValid(req)) {
+      const newTag = await Tag.create(req.body);
+      res.status(200).json(newTag);
+    } else {
+      res.status(404).json({ error: "Invalid key entered!" });
+      return;
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.put("/:id", (req, res) => {
