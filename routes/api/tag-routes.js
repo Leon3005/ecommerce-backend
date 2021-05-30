@@ -61,11 +61,15 @@ router.put("/:id", async (req, res) => {
   // update a tag's name by its `id` value
   try {
     if (isValid(req)) {
-      await Tag.update(req.body, {
+      const updateTag = await Tag.update(req.body, {
         where: {
           id: req.params.id,
         },
       });
+      if (!updateTag[0]) {
+        res.status(404).json({ message: "No tag with this id!" });
+        return;
+      }
       res.status(200).json({ success: "Tag has been updated successfully!" });
     } else {
       res.status(404).json({ error: "Invalid key entered!" });
@@ -76,8 +80,21 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
-  // delete on tag by its `id` value
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleteTag = await Tag.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    // if (!deleteTag[0]) {
+    //   res.status(404).json({ message: "No tag with this id!" });
+    //   return;
+    // }
+    res.status(200).json({ success: "Tag has been deleted successfully!" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
