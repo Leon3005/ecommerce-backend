@@ -3,6 +3,14 @@ const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoints
 
+const isValid = ({ body }) => {
+  const validKeys = ["tag_name"];
+
+  return Object.keys(body).every((keyFromReq) => {
+    return validKeys.includes(keyFromReq);
+  });
+};
+
 router.get("/", async (req, res) => {
   try {
     const allTags = await Tag.findAll({
@@ -36,14 +44,6 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   // create a new tag
-  const isValid = ({ body }) => {
-    const validKeys = ["tag_name"];
-
-    return Object.keys(body).every((keyFromReq) => {
-      return validKeys.includes(keyFromReq);
-    });
-  };
-
   try {
     if (isValid(req)) {
       const newTag = await Tag.create(req.body);
@@ -57,8 +57,23 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   // update a tag's name by its `id` value
+  try {
+    if (isValid(req)) {
+      await Tag.update(req.body, {
+        where: {
+          id: req.params.id,
+        },
+      });
+      res.status(200).json({ success: "Tag has been updated successfully!" });
+    } else {
+      res.status(404).json({ error: "Invalid key entered!" });
+      return;
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.delete("/:id", (req, res) => {
