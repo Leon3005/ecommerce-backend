@@ -31,10 +31,10 @@ Enter your database details into the .env file, run 'npm run seed' to seed the d
 ## Screenshots
 
 SQL Queries:  
-![Queries](./public/assets/images/options.png "Queries")
+![Queries](./assets/sqlqueries.png "Queries")
 
 GET request for categories:
-![GET request](./public/assets/images/employees.png "GET request")
+![GET request](./assets/GET.png "GET request")
 
 ## Tech/framework used
 
