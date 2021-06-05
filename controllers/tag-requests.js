@@ -36,6 +36,11 @@ const getTagById = async (req, res) => {
 };
 
 const newTag = async (req, res) => {
+  /* req.body should look like this...
+    {
+      tag_name: "Tag"
+    }
+  */
   try {
     if (isValid(req)) {
       const newTag = await Tag.create(req.body);
