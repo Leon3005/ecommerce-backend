@@ -1,5 +1,6 @@
 const { Category, Product } = require("../models");
 
+// Function to check if the POST body has the correct requirements
 const isValid = ({ body }) => {
   const validKeys = ["category_name"];
 
@@ -8,6 +9,7 @@ const isValid = ({ body }) => {
   });
 };
 
+// This will use the findAll function from the sequelize model to find all categories.
 const getAllCategories = async (req, res) => {
   try {
     const allCategories = await Category.findAll({
@@ -19,6 +21,7 @@ const getAllCategories = async (req, res) => {
   }
 };
 
+// Using the findByPk function to find a category based on the ID (the primary key)
 const getCategoryById = async (req, res) => {
   try {
     const categoryId = await Category.findByPk(req.params.id, {
@@ -35,7 +38,13 @@ const getCategoryById = async (req, res) => {
   }
 };
 
+// Creating a new category if POST request isValid.
 const newCategory = async (req, res) => {
+  /* req.body should look like this...
+    {
+      category_name: "Category"
+    }
+  */
   try {
     if (isValid(req)) {
       const newCategory = await Category.create(req.body);
@@ -49,6 +58,7 @@ const newCategory = async (req, res) => {
   }
 };
 
+// Updating a category if the POST request isValid and if the category ID exists.
 const updateCategory = async (req, res) => {
   try {
     if (isValid(req)) {
@@ -73,6 +83,7 @@ const updateCategory = async (req, res) => {
   }
 };
 
+// Deleting a category using the destroy function based on the entered ID.
 const deleteCategory = async (req, res) => {
   try {
     await Category.destroy({
