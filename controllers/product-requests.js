@@ -1,4 +1,4 @@
-const { Product, Category, Tag, ProductTag } = require("../../models");
+const { Product, Category, Tag, ProductTag } = require("../models");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -76,7 +76,7 @@ const newProduct = async (req, res) => {
   // }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = (req, res) => {
   // update product data
   try {
     Product.update(req.body, {
