@@ -4,10 +4,15 @@
 
 The E-Commerce Backend allows the user to GET, POST, PUT, and DELETE new products, tags, and categories. It uses MYSQL to hold the database data and Sequelize for the models and table schema. Sequelize also provides some of the route functions.
 
+## Walkthrough Video
+
+[Walkthrough Video](https://drive.google.com/file/d/1FLA6MvwX6edmarXHA3eUP73Y4a8NO4L7/view?usp=sharing)
+
 ## Table of Contents
 
 - [E-Commerce Backend](#e-commerce-backend)
   - [Description](#description)
+  - [Walkthrough Video](#walkthrough-video)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -31,10 +36,10 @@ Enter your database details into the .env file, run 'npm run seed' to seed the d
 ## Screenshots
 
 SQL Queries:  
-![Queries](./assets/sqlqueries.png "Queries")
+![Queries](./public/assets/images/sqlqueries.png "Queries")
 
 GET request for categories:
-![GET request](./assets/GET.png "GET request")
+![GET request](./public/assets/images/GET.png "GET request")
 
 ## Tech/framework used
 
