@@ -12,11 +12,11 @@ const isValid = ({ body }) => {
 // This will use the findAll function from the sequelize model to find all categories.
 const getAllCategories = async (req, res) => {
   try {
-    const allCategories = await Category.findAll({
+    const categories = await Category.findAll({
       include: { model: Product },
     });
 
-    return res.status(200).json(allCategories);
+    return res.status(200).json(categories);
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ error: "Failed to GET categories" });
@@ -26,15 +26,15 @@ const getAllCategories = async (req, res) => {
 // Using the findByPk function to find a category based on the ID (the primary key)
 const getCategoryById = async (req, res) => {
   try {
-    const categoryId = await Category.findByPk(req.params.id, {
+    const category = await Category.findByPk(req.params.id, {
       include: { model: Product },
     });
 
-    if (!categoryId) {
-      return res.status(404).json({ error: "No category ID found!" });
+    if (!category) {
+      return res.status(404).json({ error: "No category found!" });
     }
 
-    return res.status(200).json(categoryId);
+    return res.status(200).json(category);
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ error: "Failed to GET category" });
@@ -45,9 +45,9 @@ const getCategoryById = async (req, res) => {
 const newCategory = async (req, res) => {
   try {
     if (isValid(req)) {
-      const newCategory = await Category.create(req.body);
+      const category = await Category.create(req.body);
 
-      return res.status(200).json(newCategory);
+      return res.status(200).json(category);
     } else {
       return res.status(404).json({ error: "Invalid key entered!" });
     }
@@ -61,12 +61,12 @@ const newCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     if (isValid(req)) {
-      const updateCategory = await Category.update(req.body, {
+      const category = await Category.update(req.body, {
         where: {
           id: req.params.id,
         },
       });
-      if (!updateCategory[0]) {
+      if (!category[0]) {
         return res.status(404).json({ message: "No category with this id!" });
       }
       return res
