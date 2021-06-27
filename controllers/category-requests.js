@@ -15,10 +15,11 @@ const getAllCategories = async (req, res) => {
     const allCategories = await Category.findAll({
       include: { model: Product },
     });
-    res.status(200).json(allCategories);
+
+    return res.status(200).json(allCategories);
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ error: "Failed to GET categories" });
+    return res.status(500).json({ error: "Failed to GET categories" });
   }
 };
 
@@ -30,34 +31,29 @@ const getCategoryById = async (req, res) => {
     });
 
     if (!categoryId) {
-      res.status(404).json({ error: "No category ID found!" });
-      return;
+      return res.status(404).json({ error: "No category ID found!" });
     }
-    res.status(200).json(categoryId);
+
+    return res.status(200).json(categoryId);
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ error: "Failed to GET category" });
+    return res.status(500).json({ error: "Failed to GET category" });
   }
 };
 
 // Creating a new category if POST request isValid.
 const newCategory = async (req, res) => {
-  /* req.body should look like this...
-    {
-      category_name: "Category"
-    }
-  */
   try {
     if (isValid(req)) {
       const newCategory = await Category.create(req.body);
-      res.status(200).json(newCategory);
+
+      return res.status(200).json(newCategory);
     } else {
-      res.status(404).json({ error: "Invalid key entered!" });
-      return;
+      return res.status(404).json({ error: "Invalid key entered!" });
     }
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ error: "Failed to POST category" });
+    return res.status(500).json({ error: "Failed to POST category" });
   }
 };
 
@@ -71,19 +67,17 @@ const updateCategory = async (req, res) => {
         },
       });
       if (!updateCategory[0]) {
-        res.status(404).json({ message: "No category with this id!" });
-        return;
+        return res.status(404).json({ message: "No category with this id!" });
       }
-      res
+      return res
         .status(200)
         .json({ success: "Category has been updated successfully!" });
     } else {
-      res.status(404).json({ error: "Invalid key entered!" });
-      return;
+      return res.status(404).json({ error: "Invalid key entered!" });
     }
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ error: "Failed to UPDATE category" });
+    return res.status(500).json({ error: "Failed to UPDATE category" });
   }
 };
 
@@ -95,12 +89,12 @@ const deleteCategory = async (req, res) => {
         id: req.params.id,
       },
     });
-    res
+    return res
       .status(200)
       .json({ success: "Category has been deleted successfully!" });
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ error: "Failed to DELETE category" });
+    return res.status(500).json({ error: "Failed to DELETE category" });
   }
 };
 
