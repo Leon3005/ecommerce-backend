@@ -17,7 +17,8 @@ const getAllCategories = async (req, res) => {
     });
     res.status(200).json(allCategories);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to GET categories" });
   }
 };
 
@@ -34,7 +35,8 @@ const getCategoryById = async (req, res) => {
     }
     res.status(200).json(categoryId);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to GET category" });
   }
 };
 
@@ -54,7 +56,8 @@ const newCategory = async (req, res) => {
       return;
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to POST category" });
   }
 };
 
@@ -79,7 +82,8 @@ const updateCategory = async (req, res) => {
       return;
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to UPDATE category" });
   }
 };
 
@@ -95,7 +99,8 @@ const deleteCategory = async (req, res) => {
       .status(200)
       .json({ success: "Category has been deleted successfully!" });
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to DELETE category" });
   }
 };
 
