@@ -10,86 +10,86 @@ const isValid = ({ body }) => {
 
 const getAllTags = async (req, res) => {
   try {
-    const allTags = await Tag.findAll({
+    const tags = await Tag.findAll({
       include: { model: Product },
     });
-    res.status(200).json(allTags);
+
+    return res.status(200).json(tags);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to GET tags" });
   }
 };
 
 const getTagById = async (req, res) => {
   try {
-    const tagId = await Tag.findByPk(req.params.id, {
+    const tag = await Tag.findByPk(req.params.id, {
       include: { model: Product },
     });
 
-    if (!tagId) {
-      res.status(404).json({ error: "No tag ID found!" });
-      return;
+    if (!tag) {
+      return res.status(404).json({ error: "No tag found!" });
     }
-    res.status(200).json(tagId);
+    return res.status(200).json(tag);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to GET tag" });
   }
 };
 
 const newTag = async (req, res) => {
-  /* req.body should look like this...
-    {
-      tag_name: "Tag"
-    }
-  */
   try {
     if (isValid(req)) {
-      const newTag = await Tag.create(req.body);
-      res.status(200).json(newTag);
+      const tag = await Tag.create(req.body);
+
+      return res.status(200).json(tag);
     } else {
-      res.status(404).json({ error: "Invalid key entered!" });
-      return;
+      return res.status(404).json({ error: "Invalid key entered!" });
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to POST tag" });
   }
 };
 
 const updateTag = async (req, res) => {
   try {
     if (isValid(req)) {
-      const updateTag = await Tag.update(req.body, {
+      const tag = await Tag.update(req.body, {
         where: {
           id: req.params.id,
         },
       });
-      if (!updateTag[0]) {
-        res.status(404).json({ message: "No tag with this id!" });
-        return;
+      if (!tag[0]) {
+        return res.status(404).json({ message: "No tag with this id!" });
       }
-      res.status(200).json({ success: "Tag has been updated successfully!" });
+
+      return res
+        .status(200)
+        .json({ success: "Tag has been updated successfully!" });
     } else {
-      res.status(404).json({ error: "Invalid key entered!" });
-      return;
+      return res.status(404).json({ error: "Invalid key entered!" });
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to PUT tag" });
   }
 };
 
 const deleteTag = async (req, res) => {
   try {
-    const deletedTag = await Tag.destroy({
+    await Tag.destroy({
       where: {
         id: req.params.id,
       },
     });
-    // if (!deleteTag[0]) {
-    //   res.status(404).json({ message: "No tag with this id!" });
-    //   return;
-    // }
-    res.status(200).json({ success: "Tag has been deleted successfully!" });
+
+    return res
+      .status(200)
+      .json({ success: "Tag has been deleted successfully!" });
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to DELETE tag" });
   }
 };
 
