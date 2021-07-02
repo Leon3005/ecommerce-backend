@@ -2,78 +2,54 @@ const { Product, Category, Tag, ProductTag } = require("../models");
 
 const getAllProducts = async (req, res) => {
   try {
-    const allProducts = await Product.findAll({
+    const products = await Product.findAll({
       include: [{ model: Category }, { model: Tag }],
     });
-    res.status(200).json(allProducts);
+
+    return res.status(200).json(products);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to GET products" });
   }
 };
 
 const getProductById = async (req, res) => {
   try {
-    const productId = await Product.findByPk(req.params.id, {
+    const product = await Product.findByPk(req.params.id, {
       include: [{ model: Category }, { model: Tag }],
     });
 
-    if (!productId) {
-      res.status(404).json({ error: "No product ID found!" });
-      return;
+    if (!product) {
+      return res.status(404).json({ error: "No product found!" });
     }
-    res.status(200).json(productId);
+
+    return res.status(200).json(product);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to GET product" });
   }
 };
 
 const newProduct = async (req, res) => {
-  /* req.body should look like this...
-    {
-      product_name: "Basketball",
-      price: 200.00,
-      stock: 3,
-      tagIds: [1, 2, 3, 4],
-      category_id: 2
-    }
-  */
-  let productTagIds;
   try {
     const product = await Product.create(req.body);
+
     if (req.body.tagIds.length) {
-      const productTagIdArr = req.body.tagIds.map((tag_id) => {
-        return {
-          product_id: product.id,
-          tag_id,
-        };
-      });
-      return (productTagIds = ProductTag.bulkCreate(productTagIdArr));
+      const productTagIdArr = req.body.tagIds.map((tag_id) => ({
+        product_id: product.id,
+        tag_id,
+      }));
+
+      await ProductTag.bulkCreate(productTagIdArr);
     }
-    res.status(200).json({ success: "Product has been created successfully!" });
+
+    return res
+      .status(200)
+      .json({ success: "Product has been created successfully!" });
   } catch (err) {
-    res.status(400).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to POST product" });
   }
-  // try {
-  //   Product.create(req.body)
-  //     .then((product) => {
-  //       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-  //       if (req.body.tagIds.length) {
-  //         const productTagIdArr = req.body.tagIds.map((tag_id) => {
-  //           return {
-  //             product_id: product.id,
-  //             tag_id,
-  //           };
-  //         });
-  //         return ProductTag.bulkCreate(productTagIdArr);
-  //       }
-  //       // if no product tags, just respond
-  //       res.status(200).json(product);
-  //     })
-  //     .then((productTagIds) => res.status(200).json(productTagIds));
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(400).json(err);
-  // }
 };
 
 const updateProduct = (req, res) => {
@@ -115,22 +91,25 @@ const updateProduct = (req, res) => {
         res.json({ success: "Product has been updated successfully!" })
       );
   } catch (err) {
-    // console.log(err);
-    res.status(400).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to PUT product" });
   }
 };
 
 const deleteProduct = async (req, res) => {
-  // delete one product by its `id` value
   try {
     await Product.destroy({
       where: {
         id: req.params.id,
       },
     });
-    res.status(200).json({ success: "Product has been deleted successfully!" });
+
+    return res
+      .status(200)
+      .json({ success: "Product has been deleted successfully!" });
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to DELETE product" });
   }
 };
 

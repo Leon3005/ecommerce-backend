@@ -12,49 +12,48 @@ const isValid = ({ body }) => {
 // This will use the findAll function from the sequelize model to find all categories.
 const getAllCategories = async (req, res) => {
   try {
-    const allCategories = await Category.findAll({
+    const categories = await Category.findAll({
       include: { model: Product },
     });
-    res.status(200).json(allCategories);
+
+    return res.status(200).json(categories);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to GET categories" });
   }
 };
 
 // Using the findByPk function to find a category based on the ID (the primary key)
 const getCategoryById = async (req, res) => {
   try {
-    const categoryId = await Category.findByPk(req.params.id, {
+    const category = await Category.findByPk(req.params.id, {
       include: { model: Product },
     });
 
-    if (!categoryId) {
-      res.status(404).json({ error: "No category ID found!" });
-      return;
+    if (!category) {
+      return res.status(404).json({ error: "No category found!" });
     }
-    res.status(200).json(categoryId);
+
+    return res.status(200).json(category);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to GET category" });
   }
 };
 
 // Creating a new category if POST request isValid.
 const newCategory = async (req, res) => {
-  /* req.body should look like this...
-    {
-      category_name: "Category"
-    }
-  */
   try {
     if (isValid(req)) {
-      const newCategory = await Category.create(req.body);
-      res.status(200).json(newCategory);
+      const category = await Category.create(req.body);
+
+      return res.status(200).json(category);
     } else {
-      res.status(404).json({ error: "Invalid key entered!" });
-      return;
+      return res.status(404).json({ error: "Invalid key entered!" });
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to POST category" });
   }
 };
 
@@ -62,24 +61,23 @@ const newCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     if (isValid(req)) {
-      const updateCategory = await Category.update(req.body, {
+      const category = await Category.update(req.body, {
         where: {
           id: req.params.id,
         },
       });
-      if (!updateCategory[0]) {
-        res.status(404).json({ message: "No category with this id!" });
-        return;
+      if (!category[0]) {
+        return res.status(404).json({ message: "No category with this id!" });
       }
-      res
+      return res
         .status(200)
         .json({ success: "Category has been updated successfully!" });
     } else {
-      res.status(404).json({ error: "Invalid key entered!" });
-      return;
+      return res.status(404).json({ error: "Invalid key entered!" });
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to UPDATE category" });
   }
 };
 
@@ -91,11 +89,12 @@ const deleteCategory = async (req, res) => {
         id: req.params.id,
       },
     });
-    res
+    return res
       .status(200)
       .json({ success: "Category has been deleted successfully!" });
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    return res.status(500).json({ error: "Failed to DELETE category" });
   }
 };
 
